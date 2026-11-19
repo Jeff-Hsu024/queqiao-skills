@@ -39,6 +39,8 @@ queqiao doctor extension
 
 The Queqiao installation command registers the **local built package** in the Extension Hub. It does not upload the repository to npm.
 
+For independent **Windows PC (`pc-wins`) and WSL Ubuntu (`tunnel-wsl`)** setup, use the [dual-Worker deployment runbook](docs/deployment-pc-wsl.md). Each environment has its own Extension Hub and Workspace-local skill roots.
+
 ## Tool contract
 
 The single public `skills` tool has the following operations:
