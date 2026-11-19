@@ -1,0 +1,70 @@
+{
+  "name": "@jeff-hsu024/queqiao-skills",
+  "version": "0.1.0",
+  "description": "Workspace-bounded Agent Skills discovery and invocation for Queqiao Workers",
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "repository": { "type": "git", "url": "git+https://github.com/Jeff-Hsu024/queqiao-skills.git" },
+  "engines": { "node": ">=22.19 <25" },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "yaml": "^2.9.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@tibame201020/queqiao": "0.9.23",
+    "@types/node": "^24.10.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  },
+  "queqiao": {
+    "apiVersion": 1,
+    "module": "./dist/index.js",
+    "manifest": {
+      "id": "dev.queqiao.skills",
+      "version": "0.1.0",
+      "displayName": "Queqiao Skills",
+      "host": { "kind": "worker" },
+      "ordering": { "requires": [], "before": [], "after": [] },
+      "contributions": [
+        {
+          "operation": "register",
+          "tool": "skills",
+          "visibility": "public",
+          "title": "Agent Skills",
+          "description": "Discover, search, and load SKILL.md instructions from directories contained within the selected Workspace. Loading a skill never executes its scripts.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "workspaceId": { "type": "string", "minLength": 1, "maxLength": 64 },
+              "operation": { "type": "string", "enum": ["list", "search", "invoke"] },
+              "query": { "type": "string", "minLength": 1, "maxLength": 200 },
+              "skill": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "roots": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 4096 }, "minItems": 1, "maxItems": 12 },
+              "limit": { "type": "integer", "minimum": 1, "maximum": 100 }
+            },
+            "required": ["workspaceId", "operation"],
+            "additionalProperties": false
+          },
+          "requiredCapabilities": ["workspace:read"],
+          "risk": "read",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false,
+            "idempotentHint": true
+          }
+        }
+      ]
+    }
+  }
+}
